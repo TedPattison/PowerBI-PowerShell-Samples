@@ -1,11 +1,15 @@
-cls
 
 $workspaceName = "Wingtip Sales"
 $importName = "Wingtip Sales"
-$pbixFilePath = "C:\DevProjects\WingtipSales.pbix"
+$pbixFileName = "WingtipSales.pbix"
 
+# user name and password to set SQL datasource credentials
 $sqlUserName = "CptStudent"
 $sqlUserPassword = "pass@word1"
+
+# determin path to PBIX file in same folder as this script
+$scriptPath = Split-Path -parent $PSCommandPath
+$pbixFilePath =   "$scriptPath\$pbixFileName"
 
 # get object for target workspace
 $workspace = Get-PowerBIWorkspace -Name $workspaceName
