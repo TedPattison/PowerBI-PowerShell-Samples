@@ -1,11 +1,12 @@
-cls
 
 $workspaceName = "Wingtip Sales"
-$importName = "Wingtip Sales"
-$pbixFilePath = "C:\DevProjects\WingtipSales.pbix"
+$importName = "Northwind"
+$pbixFileName = "Northwind.pbix"
 
-$sqlUserName = "CptStudent"
-$sqlUserPassword = "pass@word1"
+# determine path to PBIX file in same folder as this script
+$scriptPath = Split-Path -parent $PSCommandPath
+$pbixFilePath =   "$scriptPath\$pbixFileName"
+
 
 # get object for target workspace
 $workspace = Get-PowerBIWorkspace -Name $workspaceName
@@ -16,7 +17,7 @@ $import = New-PowerBIReport -Path $pbixFilePath -Name $importName -Workspace $wo
 # get object for new dataset
 $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object Name -eq $importName
 
-# get object for new SQL datasource
+# get object for new anonymous datasource
 $datasource = Get-PowerBIDatasource -WorkspaceId $workspace.Id -DatasetId $dataset.Id
 
 # parse REST to determine gateway Id and datasource Id
@@ -36,16 +37,16 @@ $datasourePatchUrl = "gateways/$gatewayId/datasources/$datasourceId"
 # create HTTP request body to patch datasource credentials
 $patchBody = @{
   "credentialDetails" = @{
-    "credentials" = "{""credentialData"":[{""name"":""username"",""value"":""$sqlUserName""},{""name"":""password"",""value"":""$sqlUserPassword""}]}"
-    "credentialType" = "Basic"
+    "credentials" = "{""credentialData"":[]}"
+    "credentialType" = "Anonymous"
     "encryptedConnection" =  "NotEncrypted"
     "encryptionAlgorithm" = "None"
-    "privacyLevel" = "Organizational"
+    "privacyLevel" = "None"
   }
 }
 
 # convert body contents to JSON
-$patchBodyJson = ConvertTo-Json -InputObject $patchBody -Depth 6 -Compress
+$patchBodyJson = ConvertTo-Json -InputObject $patchBody -Depth 4 -Compress
 
 # execute PATCH request to set datasource credentials
 Invoke-PowerBIRestMethod -Method Patch -Url $datasourePatchUrl -Body $patchBodyJson
