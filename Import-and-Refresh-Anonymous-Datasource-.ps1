@@ -7,7 +7,6 @@ $pbixFileName = "Northwind.pbix"
 $scriptPath = Split-Path -parent $PSCommandPath
 $pbixFilePath =   "$scriptPath\$pbixFileName"
 
-
 # get object for target workspace
 $workspace = Get-PowerBIWorkspace -Name $workspaceName
 
