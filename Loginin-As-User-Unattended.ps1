@@ -5,7 +5,7 @@ $securePassword = ConvertTo-SecureString –String $password –AsPlainText -Force
 $credential = New-Object –TypeName System.Management.Automation.PSCredential `
                          –ArgumentList $userName, $securePassword
 
-Disconnect-PowerBIServiceAccount
+# Disconnect-PowerBIServiceAccount
 $user = Connect-PowerBIServiceAccount -Environment Public -Credential $credential
 $userName = $user.UserName
 
