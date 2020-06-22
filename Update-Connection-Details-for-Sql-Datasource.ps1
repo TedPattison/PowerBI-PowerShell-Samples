@@ -60,4 +60,4 @@ $postBodyJson = ConvertTo-Json -InputObject $postBody -Depth 6 -Compress
 # execute POST operation to update datasource connection details
 Invoke-PowerBIRestMethod -Method Post -Url $datasourePatchUrl -Body $postBodyJson
 
-# NOTE: dataset credetnails must be reset after updating connection details
+# NOTE: dataset credentials must be reset after updating connection details
