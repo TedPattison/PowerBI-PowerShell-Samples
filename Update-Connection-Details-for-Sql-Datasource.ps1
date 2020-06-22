@@ -3,7 +3,7 @@ cls
 $workspaceName = "Wingtip Sales"
 $datasetName = "Wingtip Sales"
 
-# add credentials for SQL datasource
+# add new connection details for SQL datasource
 $sqlDatabaseServer = "cpt.database.windows.net"
 $sqlDatabaseName = "WingtipSalesDb"
 
@@ -33,7 +33,6 @@ $sqlDatabaseNameCurrent = $datasource.connectionDetails.database
 
 # parse together REST Url to update connection details
 $datasourePatchUrl = "groups/$workspaceId/datasets/$datasetId/Default.UpdateDatasources"
-
 
 # create HTTP request body to update datasource connection details
 $postBody = @{

@@ -1,6 +1,6 @@
 
 $workspaceName = "Wingtip Sales"
-$datasetName = "Northwind"
+$datasetName = "Wingtip Sales"
 
 # get object for target workspace
 $workspace = Get-PowerBIWorkspace -Name $workspaceName
