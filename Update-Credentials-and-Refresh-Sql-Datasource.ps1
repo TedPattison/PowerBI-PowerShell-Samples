@@ -1,7 +1,5 @@
-
 $workspaceName = "Wingtip Sales"
 $datasetName = "Wingtip Sales"
-
 
 # add credentials for SQL datasource
 $sqlUserName = "CptStudent"
@@ -9,7 +7,6 @@ $sqlUserPassword = "pass@word1"
 
 # get object for target workspace
 $workspace = Get-PowerBIWorkspace -Name $workspaceName
-
 
 # get object for new dataset
 $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object Name -eq $datasetName
