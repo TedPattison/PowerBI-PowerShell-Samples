@@ -1,7 +1,7 @@
 cls
 
 $workspaceName = "Wingtip Sales"
-$importName = "Wingtip Sales"
+$datasetName = "Wingtip Sales"
 
 # add credentials for SQL datasource
 $sqlDatabaseServer = "cpt.database.windows.net"
@@ -11,7 +11,7 @@ $sqlDatabaseName = "WingtipSalesDb"
 $workspace = Get-PowerBIWorkspace -Name $workspaceName
 
 # get object for new dataset
-$dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object Name -eq $importName
+$dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object Name -eq $datasetName
 
 # get object for new SQL datasource
 $datasource = Get-PowerBIDatasource -WorkspaceId $workspace.Id -DatasetId $dataset.Id
@@ -21,7 +21,7 @@ $workspaceId = $workspace.Id
 $datasetId = $dataset.Id
 $datasourceUrl = "groups/$workspaceId/datasets/$datasetId/datasources"
 
-# execute REST call to determine gateway Id and datasource Id
+# execute REST call to determine gateway Id, datasource Id and current connection details
 $datasourcesResult = Invoke-PowerBIRestMethod -Method Get -Url $datasourceUrl | ConvertFrom-Json
 
 # parse REST URL used to patch datasource credentials
@@ -31,11 +31,12 @@ $datasourceId = $datasource.datasourceId
 $sqlDatabaseServerCurrent = $datasource.connectionDetails.server
 $sqlDatabaseNameCurrent = $datasource.connectionDetails.database
 
+# parse together REST Url to update connection details
 $datasourePatchUrl = "groups/$workspaceId/datasets/$datasetId/Default.UpdateDatasources"
 
 
-# create HTTP request body to patch datasource credentials
-$patchBody = @{
+# create HTTP request body to update datasource connection details
+$postBody = @{
   "updateDetails" = @(
    @{
     "connectionDetails" = @{
@@ -55,14 +56,9 @@ $patchBody = @{
 }
 
 # convert body contents to JSON
-$patchBodyJson = ConvertTo-Json -InputObject $patchBody -Depth 6 -Compress
+$postBodyJson = ConvertTo-Json -InputObject $postBody -Depth 6 -Compress
 
-# execute PATCH request to set datasource credentials
-Invoke-PowerBIRestMethod -Method Post -Url $datasourePatchUrl -Body $patchBodyJson
+# execute POST operation to update datasource connection details
+Invoke-PowerBIRestMethod -Method Post -Url $datasourePatchUrl -Body $postBodyJson
 
-# parse REST URL for dataset refresh
-$datasetRefreshUrl = "groups/$workspaceId/datasets/$datasetId/refreshes"
-
-# execute POST to begin dataset refresh
-Invoke-PowerBIRestMethod -Method Post -Url $datasetRefreshUrl -WarningAction Ignore
-
+# NOTE: dataset credetnails must be reset after updating connection details
